@@ -75,10 +75,7 @@ def get_recipe_urls_and_hash():
                         ).hexdigest()
                         if idhash not in data:
                             data[idhash] = {"title": title, "url": url, "tags": [item]}
-                            newrecipeurls.append({"url": url, "hash": idhash})
                         else:
-                            if data[idhash].get("complete") != True:
-                                newrecipeurls.append({"url": url, "hash": idhash})
                             if item not in data[idhash]["tags"]:
                                 data[idhash]["tags"].append(item)
                     nextbutton = soup.find(
@@ -94,6 +91,10 @@ def get_recipe_urls_and_hash():
                 except:
                     print(f"couldnt get urls fron {url}")
                     break
+    for key in data:
+        if data[key].get("complete") != True:
+            newrecipeurls.append({"url": data[key]["url"], "hash": key})
+    print(f"{len(newrecipeurls)} unique urls collected")
 
 
 get_recipe_urls_and_hash()
@@ -176,6 +177,7 @@ for item in newrecipeurls:
                     "description": desc,
                     "cost": cost,
                     "specific_cost": specificcost,
+                    "item_id":itemid,
                     "replacement_item_ids":replacementids
                 }
             )
